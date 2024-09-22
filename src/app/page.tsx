@@ -8,9 +8,13 @@ interface Track {
   id: string;
   name: string;
   artists: { name: string }[];
+  uri: string;
   album: {
     name: string;
     images: { url: string; height: number; width: number }[];
+  };
+  external_urls: {
+    spotify: string;
   };
 }
 
@@ -34,7 +38,7 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        "https://api.spotify.com/v1/me/top/tracks?limit=25",
+        "https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=25",
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -87,6 +91,7 @@ export default function Home() {
                     {track.artists.map((a) => a.name).join(", ")}
                   </p>
                   <p className="text-gray-500 text-sm">{track.album.name}</p>
+                  <a href={track.external_urls.spotify}>Listen</a>
                 </div>
               ))}
             </div>
