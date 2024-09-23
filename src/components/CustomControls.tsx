@@ -49,6 +49,9 @@ const CustomControls: React.FC<CustomControlsProps> = ({
         );
         setTargetZ(newZ);
       },
+      onDragEnd: () => {
+        console.log("Speed Z:", speedZ);
+      },
     },
     {
       target: canvasRef.current ? canvasRef.current : undefined,
