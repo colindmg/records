@@ -4,9 +4,14 @@ import LoginPage from "@/components/LoginPage";
 import Scene from "@/components/Scene";
 import { Track } from "@/lib/types";
 import { Canvas } from "@react-three/fiber";
-import { Suspense, useCallback, useEffect, useState } from "react";
+import Image from "next/image";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
 export default function Home() {
+  // REFS
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // STATES
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [topTracks, setTopTracks] = useState<Track[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +34,7 @@ export default function Home() {
       }
 
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
       setTopTracks(data.items);
       setError(null);
     } catch (err) {
@@ -58,10 +63,29 @@ export default function Home() {
               {error}
             </p>
           )}
+
+          {/* BLUR SHAPES */}
+          <div className="pointer-events-none">
+            <Image
+              src="/img/topright.svg"
+              width={682}
+              height={381}
+              alt="Blurry shape on the top right corner"
+              className="absolute top-0 right-0 z-10"
+            />
+            <Image
+              src="/img/bottomleft.svg"
+              width={856}
+              height={433}
+              alt="Blurry shape on the bottom left corner"
+              className="absolute bottom-0 left-0 z-10"
+            />
+          </div>
+
           {/* R3F CANVAS */}
-          <Canvas>
+          <Canvas ref={canvasRef}>
             <Suspense fallback={null}>
-              <Scene trackList={topTracks} />
+              <Scene trackList={topTracks} canvasRef={canvasRef} />
             </Suspense>
           </Canvas>
         </>
