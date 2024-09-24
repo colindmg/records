@@ -69,7 +69,7 @@ export default function Home() {
             )}
 
             {/* BLUR SHAPES */}
-            <div className="pointer-events-none">
+            <div className="pointer-events-none select-none">
               <Image
                 src="/img/topright.svg"
                 width={682}

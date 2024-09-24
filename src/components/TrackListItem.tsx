@@ -21,8 +21,16 @@ const TrackListItem: React.FC<TrackListItemProps> = ({
   // STATES
   const [isHover, setIsHover] = useState(false);
 
+  // MOTION VALUES
+  const variants = {
+    initial: { x: 0, y: 0 },
+    appear: { x: 0, y: 0.5 },
+    hover: { x: 0.2, y: 0.5 },
+  };
+
   // CONTEXT FUNCTIONS
-  const { setHoveredTrack, setSelectedTrack } = useTrackContext();
+  const { setHoveredTrack, setPrevHoveredTrack, setSelectedTrack } =
+    useTrackContext();
 
   // LOADING TEXTURE
   const texture = useTexture(track.album.images[0].url);
@@ -49,7 +57,7 @@ const TrackListItem: React.FC<TrackListItemProps> = ({
 
       function animate(time: number) {
         const elapsed = time - start;
-        const t = Math.min(elapsed / duration, 1); // Normalise t entre 0 et 1
+        const t = Math.min(elapsed / duration, 0.85);
 
         const easedValue = easeInOutQuad(t);
         uniforms.current.uOpacity.value = easedValue;
@@ -66,9 +74,8 @@ const TrackListItem: React.FC<TrackListItemProps> = ({
   // ANIMATION de décalage sur l'axe X au survol
   useEffect(() => {
     if (isHover) {
-      // console.log(track.name + " is hovered.");
     }
-  }, [isHover, track]);
+  }, [isHover]);
 
   useFrame(() => {
     uniforms.current.uCameraSpeed.value = cameraSpeedRef.get();
@@ -78,24 +85,25 @@ const TrackListItem: React.FC<TrackListItemProps> = ({
     <motion.mesh
       key={track.id}
       position={[0, 0.5, -index * 0.5]}
-      initial={{ y: 0 }}
-      animate={{ y: 0.5 }}
+      variants={variants}
+      initial="initial"
+      animate={isHover ? "hover" : "appear"}
       transition={{
-        duration: 1,
-        delay: index * 0.05,
-        // ease: "easeOut",
-        type: "spring",
-        damping: 12,
+        x: { type: "spring", stiffness: 300, damping: 20 },
+        y: { duration: 1, delay: index * 0.05, type: "spring", damping: 12 },
       }}
       onPointerEnter={(e) => {
         e.stopPropagation();
+        document.body.style.cursor = "pointer";
         setIsHover(true);
         setHoveredTrack(track);
       }}
       onPointerLeave={(e) => {
         e.stopPropagation();
+        document.body.style.cursor = "auto";
         setIsHover(false);
         setHoveredTrack(null);
+        setPrevHoveredTrack(track);
       }}
       onPointerDown={(e) => {
         e.stopPropagation();
