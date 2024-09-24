@@ -25,6 +25,7 @@ void main() {
 export const fragmentShader = `
 
 uniform sampler2D uTexture;
+uniform sampler2D uAlphaMapTexture;
 uniform float uOpacity;
 
 varying vec2 vUv;
@@ -33,6 +34,10 @@ void main() {
   // gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
 
   vec4 color = texture2D(uTexture, vUv);
-  gl_FragColor = vec4(color.xyz, uOpacity);
+
+  // Alpha map
+  float alpha = texture2D(uAlphaMapTexture, vUv).r;
+
+  gl_FragColor = vec4(color.xyz, uOpacity * alpha);
 }
 `;

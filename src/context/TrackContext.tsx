@@ -5,10 +5,8 @@ import React, { createContext, useContext, useState } from "react";
 // Définissez la forme de votre contexte
 interface TrackContextType {
   hoveredTrack: Track | null;
-  prevHoveredTrack: Track | null;
   selectedTrack: Track | null;
   setHoveredTrack: (track: Track | null) => void;
-  setPrevHoveredTrack: (track: Track | null) => void;
   setSelectedTrack: (track: Track | null) => void;
 }
 
@@ -20,17 +18,14 @@ export const TrackProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [hoveredTrack, setHoveredTrack] = useState<Track | null>(null);
-  const [prevHoveredTrack, setPrevHoveredTrack] = useState<Track | null>(null);
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
 
   return (
     <TrackContext.Provider
       value={{
         hoveredTrack,
-        prevHoveredTrack,
         selectedTrack,
         setHoveredTrack,
-        setPrevHoveredTrack,
         setSelectedTrack,
       }}
     >

@@ -1,10 +1,15 @@
 import { Track } from "@/lib/types";
-import { OrthographicCamera } from "@react-three/drei";
+import {
+  AdaptiveDpr,
+  AdaptiveEvents,
+  OrthographicCamera,
+  useTexture,
+} from "@react-three/drei";
+import { useMotionValue } from "framer-motion";
 import { useRef } from "react";
 import * as THREE from "three";
 import CustomControls from "./CustomControls";
 import TrackListItem from "./TrackListItem";
-import { useMotionValue } from "framer-motion";
 
 interface SceneProps {
   trackList: Track[];
@@ -12,26 +17,30 @@ interface SceneProps {
 }
 
 const Scene: React.FC<SceneProps> = ({ trackList, canvasRef }) => {
-  // STATE
-  // const [cameraSpeed, setCameraSpeed] = useState<number>(0);
-
   // REFS
   const cameraRef = useRef<THREE.OrthographicCamera>(null);
-  // const cameraSpeedRef = useRef<number>(0);
   const cameraSpeedRef = useMotionValue(0);
 
   // POSITION INITIALE DE LA CAMERA
   const [cameraX, cameraY, cameraZ] = [3, 3.75, 3];
 
+  // ALPHAMAP TEXTURE POUR LES TRACKS
+  const alphaMapTexture = useTexture("/textures/alphaMap.webp");
+
   return (
     <>
+      {/* PERFORMANCES */}
+      <AdaptiveDpr pixelated />
+      <AdaptiveEvents />
+
       <OrthographicCamera
         ref={cameraRef}
         makeDefault
-        left={-1.5 * (window.innerWidth / window.innerHeight)}
-        right={1.5 * (window.innerWidth / window.innerHeight)}
-        top={1.5}
-        bottom={-1.5}
+        // left={-1.5 * (window.innerWidth / window.innerHeight)}
+        // right={1.5 * (window.innerWidth / window.innerHeight)}
+        // top={1.5}
+        // bottom={-1.5}
+        zoom={275}
         near={2}
         far={10}
         position={[cameraX, cameraY, cameraZ]}
@@ -49,6 +58,7 @@ const Scene: React.FC<SceneProps> = ({ trackList, canvasRef }) => {
               track={track}
               index={index}
               cameraSpeedRef={cameraSpeedRef}
+              alphaMapTexture={alphaMapTexture}
             />
           );
         })}

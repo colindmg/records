@@ -6,17 +6,20 @@ import { useFrame } from "@react-three/fiber";
 import { MotionValue } from "framer-motion";
 import { motion } from "framer-motion-3d";
 import React, { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
 
 interface TrackListItemProps {
   track: Track;
   index: number;
   cameraSpeedRef: MotionValue<number>;
+  alphaMapTexture: THREE.Texture;
 }
 
 const TrackListItem: React.FC<TrackListItemProps> = ({
   track,
   index,
   cameraSpeedRef,
+  alphaMapTexture,
 }) => {
   // STATES
   const [isHover, setIsHover] = useState(false);
@@ -29,8 +32,7 @@ const TrackListItem: React.FC<TrackListItemProps> = ({
   };
 
   // CONTEXT FUNCTIONS
-  const { setHoveredTrack, setPrevHoveredTrack, setSelectedTrack } =
-    useTrackContext();
+  const { setHoveredTrack, setSelectedTrack } = useTrackContext();
 
   // LOADING TEXTURE
   const texture = useTexture(track.album.images[0].url);
@@ -40,6 +42,7 @@ const TrackListItem: React.FC<TrackListItemProps> = ({
     uTexture: { value: texture },
     uOpacity: { value: 0 },
     uCameraSpeed: { value: cameraSpeedRef.get() || 0 },
+    uAlphaMapTexture: { value: alphaMapTexture },
   });
 
   // ANIMATION de l'uOpacity au montage du composant
@@ -103,7 +106,6 @@ const TrackListItem: React.FC<TrackListItemProps> = ({
         document.body.style.cursor = "auto";
         setIsHover(false);
         setHoveredTrack(null);
-        setPrevHoveredTrack(track);
       }}
       onPointerDown={(e) => {
         e.stopPropagation();
