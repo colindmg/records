@@ -1,17 +1,28 @@
+import { useTrackContext } from "@/context/TrackContext";
 import { Track } from "@/lib/types";
 import { fragmentShader, vertexShader } from "@/shaders/shader";
 import { useTexture } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
+import { MotionValue } from "framer-motion";
 import { motion } from "framer-motion-3d";
 import React, { useEffect, useRef, useState } from "react";
 
 interface TrackListItemProps {
   track: Track;
   index: number;
+  cameraSpeedRef: MotionValue<number>;
 }
 
-const TrackListItem: React.FC<TrackListItemProps> = ({ track, index }) => {
+const TrackListItem: React.FC<TrackListItemProps> = ({
+  track,
+  index,
+  cameraSpeedRef,
+}) => {
   // STATES
   const [isHover, setIsHover] = useState(false);
+
+  // CONTEXT FUNCTIONS
+  const { setHoveredTrack, setSelectedTrack } = useTrackContext();
 
   // LOADING TEXTURE
   const texture = useTexture(track.album.images[0].url);
@@ -20,6 +31,7 @@ const TrackListItem: React.FC<TrackListItemProps> = ({ track, index }) => {
   const uniforms = useRef({
     uTexture: { value: texture },
     uOpacity: { value: 0 },
+    uCameraSpeed: { value: cameraSpeedRef.get() || 0 },
   });
 
   // ANIMATION de l'uOpacity au montage du composant
@@ -58,6 +70,10 @@ const TrackListItem: React.FC<TrackListItemProps> = ({ track, index }) => {
     }
   }, [isHover, track]);
 
+  useFrame(() => {
+    uniforms.current.uCameraSpeed.value = cameraSpeedRef.get();
+  });
+
   return (
     <motion.mesh
       key={track.id}
@@ -74,13 +90,19 @@ const TrackListItem: React.FC<TrackListItemProps> = ({ track, index }) => {
       onPointerEnter={(e) => {
         e.stopPropagation();
         setIsHover(true);
+        setHoveredTrack(track);
       }}
       onPointerLeave={(e) => {
         e.stopPropagation();
         setIsHover(false);
+        setHoveredTrack(null);
+      }}
+      onPointerDown={(e) => {
+        e.stopPropagation();
+        setSelectedTrack(track);
       }}
     >
-      <planeGeometry args={[1, 1, 16, 16]} />
+      <planeGeometry args={[1, 1, 8, 8]} />
       <shaderMaterial
         transparent
         vertexShader={vertexShader}

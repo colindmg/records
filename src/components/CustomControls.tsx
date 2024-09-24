@@ -1,6 +1,7 @@
 import { clamp, lerp } from "@/lib/utils";
 import { useFrame } from "@react-three/fiber";
 import { useGesture } from "@use-gesture/react";
+import { MotionValue } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
@@ -8,16 +9,17 @@ interface CustomControlsProps {
   canvasRef: React.RefObject<HTMLCanvasElement>;
   cameraRef: React.RefObject<THREE.OrthographicCamera>;
   itemsCount: number;
+  cameraSpeedRef: MotionValue<number>;
 }
 
 const CustomControls: React.FC<CustomControlsProps> = ({
   canvasRef,
   cameraRef,
   itemsCount,
+  cameraSpeedRef,
 }) => {
   const [targetZ, setTargetZ] = useState(3);
   const previousZRef = useRef<number | null>(null);
-  const [speedZ, setSpeedZ] = useState(0);
 
   // DÉSACTIVER LE TOUCH ACTION SUR LE CANVAS
   useEffect(() => {
@@ -49,9 +51,6 @@ const CustomControls: React.FC<CustomControlsProps> = ({
         );
         setTargetZ(newZ);
       },
-      onDragEnd: () => {
-        console.log("Speed Z:", speedZ);
-      },
     },
     {
       target: canvasRef.current ? canvasRef.current : undefined,
@@ -69,7 +68,7 @@ const CustomControls: React.FC<CustomControlsProps> = ({
       const currentZ = cameraRef.current.position.z;
       if (previousZRef.current !== null && delta > 0) {
         const velocityZ = (currentZ - previousZRef.current) / delta;
-        setSpeedZ(velocityZ);
+        cameraSpeedRef.set(velocityZ);
       }
       previousZRef.current = currentZ;
     }

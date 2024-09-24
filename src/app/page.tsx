@@ -1,7 +1,9 @@
 "use client";
 
+import HoveredTrack from "@/components/HoveredTrack";
 import LoginPage from "@/components/LoginPage";
 import Scene from "@/components/Scene";
+import { TrackProvider } from "@/context/TrackContext";
 import { Track } from "@/lib/types";
 import { Canvas } from "@react-three/fiber";
 import Image from "next/image";
@@ -21,7 +23,7 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        "https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=25",
+        "https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=20",
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -55,43 +57,46 @@ export default function Home() {
   }, [fetchTopTracks]);
 
   return (
-    <main className="h-dvh w-screen relative overflow-hidden">
-      {accessToken ? (
-        <>
-          {error && (
-            <p className="text-red-500 text-center mb-4 fixed top-5 left-5">
-              {error}
-            </p>
-          )}
+    <TrackProvider>
+      <main className="h-dvh w-screen relative overflow-hidden">
+        <HoveredTrack />
+        {accessToken ? (
+          <>
+            {error && (
+              <p className="text-red-500 text-center mb-4 fixed top-5 left-5">
+                {error}
+              </p>
+            )}
 
-          {/* BLUR SHAPES */}
-          <div className="pointer-events-none">
-            <Image
-              src="/img/topright.svg"
-              width={682}
-              height={381}
-              alt="Blurry shape on the top right corner"
-              className="absolute top-0 right-0 z-10"
-            />
-            <Image
-              src="/img/bottomleft.svg"
-              width={856}
-              height={433}
-              alt="Blurry shape on the bottom left corner"
-              className="absolute bottom-0 left-0 z-10"
-            />
-          </div>
+            {/* BLUR SHAPES */}
+            <div className="pointer-events-none">
+              <Image
+                src="/img/topright.svg"
+                width={682}
+                height={381}
+                alt="Blurry shape on the top right corner"
+                className="absolute top-0 right-0 z-10"
+              />
+              <Image
+                src="/img/bottomleft.svg"
+                width={856}
+                height={433}
+                alt="Blurry shape on the bottom left corner"
+                className="absolute bottom-0 left-0 z-10"
+              />
+            </div>
 
-          {/* R3F CANVAS */}
-          <Canvas ref={canvasRef}>
-            <Suspense fallback={null}>
-              <Scene trackList={topTracks} canvasRef={canvasRef} />
-            </Suspense>
-          </Canvas>
-        </>
-      ) : (
-        <LoginPage />
-      )}
-    </main>
+            {/* R3F CANVAS */}
+            <Canvas ref={canvasRef}>
+              <Suspense fallback={null}>
+                <Scene trackList={topTracks} canvasRef={canvasRef} />
+              </Suspense>
+            </Canvas>
+          </>
+        ) : (
+          <LoginPage />
+        )}
+      </main>
+    </TrackProvider>
   );
 }
