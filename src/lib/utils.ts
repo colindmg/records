@@ -9,5 +9,6 @@ const clamp = (value: number, min: number, max: number) => {
 };
 
 const scrollOffset = motionValue(0);
+const cameraSpeed = motionValue(0);
 
-export { clamp, lerp, scrollOffset };
+export { cameraSpeed, clamp, lerp, scrollOffset };

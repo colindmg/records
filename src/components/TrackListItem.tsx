@@ -1,9 +1,9 @@
 import { useTrackContext } from "@/context/TrackContext";
 import { Track } from "@/lib/types";
+import { cameraSpeed } from "@/lib/utils";
 import { fragmentShader, vertexShader } from "@/shaders/shader";
 import { useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { MotionValue } from "framer-motion";
 import { motion } from "framer-motion-3d";
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
@@ -11,14 +11,12 @@ import * as THREE from "three";
 interface TrackListItemProps {
   track: Track;
   index: number;
-  cameraSpeedRef: MotionValue<number>;
   alphaMapTexture: THREE.Texture;
 }
 
 const TrackListItem: React.FC<TrackListItemProps> = ({
   track,
   index,
-  cameraSpeedRef,
   alphaMapTexture,
 }) => {
   // STATES
@@ -41,7 +39,7 @@ const TrackListItem: React.FC<TrackListItemProps> = ({
   const uniforms = useRef({
     uTexture: { value: texture },
     uOpacity: { value: 0 },
-    uCameraSpeed: { value: cameraSpeedRef.get() || 0 },
+    uCameraSpeed: { value: cameraSpeed.get() || 0 },
     uAlphaMapTexture: { value: alphaMapTexture },
   });
 
@@ -81,7 +79,7 @@ const TrackListItem: React.FC<TrackListItemProps> = ({
   }, [isHover]);
 
   useFrame(() => {
-    uniforms.current.uCameraSpeed.value = cameraSpeedRef.get();
+    uniforms.current.uCameraSpeed.value = cameraSpeed.get();
   });
 
   return (

@@ -5,7 +5,6 @@ import {
   OrthographicCamera,
   useTexture,
 } from "@react-three/drei";
-import { useMotionValue } from "framer-motion";
 import { useRef } from "react";
 import * as THREE from "three";
 import CustomControls from "./CustomControls";
@@ -18,7 +17,6 @@ interface SceneProps {
 const Scene: React.FC<SceneProps> = ({ trackList }) => {
   // REFS
   const cameraRef = useRef<THREE.OrthographicCamera>(null);
-  const cameraSpeedRef = useMotionValue(0);
 
   // POSITION INITIALE DE LA CAMERA
   const [cameraX, cameraY, cameraZ] = [3, 3.75, 3];
@@ -35,10 +33,6 @@ const Scene: React.FC<SceneProps> = ({ trackList }) => {
       <OrthographicCamera
         ref={cameraRef}
         makeDefault
-        // left={-1.5 * (window.innerWidth / window.innerHeight)}
-        // right={1.5 * (window.innerWidth / window.innerHeight)}
-        // top={1.5}
-        // bottom={-1.5}
         zoom={275}
         near={2}
         far={10}
@@ -56,18 +50,13 @@ const Scene: React.FC<SceneProps> = ({ trackList }) => {
               key={track.id}
               track={track}
               index={index}
-              cameraSpeedRef={cameraSpeedRef}
               alphaMapTexture={alphaMapTexture}
             />
           );
         })}
       </group>
 
-      <CustomControls
-        cameraRef={cameraRef}
-        itemsCount={trackList.length}
-        cameraSpeedRef={cameraSpeedRef}
-      />
+      <CustomControls cameraRef={cameraRef} itemsCount={trackList.length} />
     </>
   );
 };

@@ -1,7 +1,6 @@
-import { lerp, scrollOffset } from "@/lib/utils";
+import { cameraSpeed, lerp, scrollOffset } from "@/lib/utils";
 import { useScroll } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { MotionValue } from "framer-motion";
 import React, { useRef } from "react";
 import * as THREE from "three";
 
@@ -9,14 +8,12 @@ interface CustomControlsProps {
   // canvasRef: React.RefObject<HTMLCanvasElement>;
   cameraRef: React.RefObject<THREE.OrthographicCamera>;
   itemsCount: number;
-  cameraSpeedRef: MotionValue<number>;
 }
 
 const CustomControls: React.FC<CustomControlsProps> = ({
   // canvasRef,
   cameraRef,
   itemsCount,
-  cameraSpeedRef,
 }) => {
   const previousZRef = useRef<number | null>(null);
   const scroll = useScroll();
@@ -36,7 +33,7 @@ const CustomControls: React.FC<CustomControlsProps> = ({
 
       if (previousZRef.current !== null && delta > 0) {
         const velocityZ = (newZ - previousZRef.current) / delta;
-        cameraSpeedRef.set(velocityZ);
+        cameraSpeed.set(velocityZ);
       }
       previousZRef.current = newZ;
     }
