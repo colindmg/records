@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Spotify Album Viewer",
+  title: "Records • Visualize & share your monthly top tracks",
 };
 
 export default function RootLayout({

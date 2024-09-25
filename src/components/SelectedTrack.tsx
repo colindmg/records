@@ -1,9 +1,35 @@
 import { useTrackContext } from "@/context/TrackContext";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 
 const SelectedTrack = () => {
   const { selectedTrack } = useTrackContext();
+
+  // GESTION DE L'AUDIO
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [progress, setProgress] = useState(0);
+  const [remainingTime, setRemainingTime] = useState(30);
+
+  useEffect(() => {
+    if (selectedTrack && audioRef.current) {
+      audioRef.current.src = selectedTrack.preview_url;
+      audioRef.current.play();
+
+      const audio = audioRef.current;
+      audio.volume = 0.1;
+      if (!audio) return;
+
+      const updateProgress = () => {
+        const duration = audio.duration || 30;
+        setProgress((audio.currentTime / duration) * 100);
+        setRemainingTime(Math.ceil(duration - audio.currentTime));
+      };
+
+      audio.addEventListener("timeupdate", updateProgress);
+      return () => audio.removeEventListener("timeupdate", updateProgress);
+    }
+  }, [selectedTrack]);
 
   return (
     <AnimatePresence mode="wait">
@@ -17,7 +43,7 @@ const SelectedTrack = () => {
               transition: { duration: 1, ease: "easeOut" },
             }}
             exit={{ opacity: 0 }}
-            className="absolute top-16 left-16 flex gap-4 p-4 z-50 bg-[#F1F1F1] rounded-md shadow-sm"
+            className="absolute top-16 left-16 flex items-center gap-4 p-4 z-50 bg-[#F1F1F1] rounded-md shadow-sm"
           >
             {/* IMAGE COVER OF THE TRACK */}
             <a href={selectedTrack.external_urls.spotify} target="_blank">
@@ -29,7 +55,7 @@ const SelectedTrack = () => {
                   transition: { duration: 0.5, ease: "easeOut", delay: 0.1 },
                 }}
                 exit={{ opacity: 0 }}
-                className="rounded-sm overflow-hidden relative group w-24 h-24 cursor-pointer"
+                className="rounded-sm overflow-hidden relative group h-20 w-20 cursor-pointer"
               >
                 <Image
                   src={selectedTrack.album.images[0].url}
@@ -73,15 +99,24 @@ const SelectedTrack = () => {
               >
                 by {selectedTrack.artists[0].name}
               </motion.p>
-            </div>
-          </motion.div>
 
-          {/* AUDIO PREVIEW OF THE SELECTED TRACK */}
-          <audio
-            src={selectedTrack.preview_url}
-            autoPlay
-            className="hidden"
-          ></audio>
+              {/* PROGRESS BAR */}
+              <div className="flex items-center mt-1">
+                <div className="w-full bg-white rounded-full h-1">
+                  <div
+                    className="bg-[#171717] h-1 rounded-full transition-all ease-in-out duration-200"
+                    style={{ width: `${progress}%` }}
+                  ></div>
+                </div>
+                <span className="text-[10px] text-[#9C9A9A] w-14 text-right">
+                  -00:{remainingTime < 10 ? `0${remainingTime}` : remainingTime}
+                </span>
+              </div>
+            </div>
+
+            {/* AUDIO CONTROLS */}
+            <audio ref={audioRef} autoPlay className="hidden" />
+          </motion.div>
         </>
       )}
     </AnimatePresence>

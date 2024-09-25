@@ -19,8 +19,7 @@ export const generateRandomString = (length: number): string => {
 };
 
 export const getAuthorizationUrl = (state: string): string => {
-  const scope =
-    "user-read-private user-read-email user-top-read playlist-modify-public";
+  const scope = "user-read-private user-read-email user-top-read";
   return (
     SPOTIFY_AUTH_URL +
     "?" +
