@@ -8,3 +8,8 @@ html {
   color: #171717;
   overflow: hidden;
 }
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+  width: 0px;
+}

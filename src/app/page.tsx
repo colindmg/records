@@ -7,7 +7,7 @@ import Scene from "@/components/Scene";
 import SelectedTrack from "@/components/SelectedTrack";
 import { TrackProvider } from "@/context/TrackContext";
 import { Track } from "@/lib/types";
-import { useProgress } from "@react-three/drei";
+import { ScrollControls, useProgress } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { AnimatePresence } from "framer-motion";
 import Image from "next/image";
@@ -116,7 +116,13 @@ export default function Home() {
             {/* R3F CANVAS */}
             <Canvas ref={canvasRef}>
               <Suspense fallback={null}>
-                <Scene trackList={topTracks} canvasRef={canvasRef} />
+                <ScrollControls
+                  horizontal={false}
+                  pages={topTracks.length / 2.5}
+                  damping={0.01}
+                >
+                  <Scene trackList={topTracks} canvasRef={canvasRef} />
+                </ScrollControls>
               </Suspense>
             </Canvas>
           </>
