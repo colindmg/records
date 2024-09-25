@@ -1,15 +1,27 @@
 "use client";
 
 import HoveredTrack from "@/components/HoveredTrack";
+import LoaderScreen from "@/components/LoaderScreen";
 import LoginPage from "@/components/LoginPage";
 import Scene from "@/components/Scene";
+import SelectedTrack from "@/components/SelectedTrack";
 import { TrackProvider } from "@/context/TrackContext";
 import { Track } from "@/lib/types";
+import { useProgress } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
+import { AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
 export default function Home() {
+  // CHECK SI LA ROUTE EST JUSTE "/"
+  const [isRoot, setIsRoot] = useState(false);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsRoot(window.location.pathname === "/");
+    }
+  }, []);
+
   // REFS
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -18,6 +30,7 @@ export default function Home() {
   const [topTracks, setTopTracks] = useState<Track[]>([]);
   const [error, setError] = useState<string | null>(null);
 
+  // FUNCTIONS
   const fetchTopTracks = useCallback(async () => {
     if (!accessToken) return;
 
@@ -56,12 +69,26 @@ export default function Home() {
     }
   }, [fetchTopTracks]);
 
+  // LOADING
+  const { progress } = useProgress();
+
   return (
     <TrackProvider>
       <main className="h-dvh w-screen relative overflow-hidden">
-        <HoveredTrack />
         {accessToken ? (
           <>
+            {/* LOADING */}
+            <AnimatePresence>
+              {progress < 100 && <LoaderScreen />}
+            </AnimatePresence>
+
+            {/* SELECTED TRACK */}
+            <SelectedTrack />
+
+            {/* HOVERED TRACK */}
+            <HoveredTrack />
+
+            {/* ERROR */}
             {error && (
               <p className="text-red-500 text-center mb-4 fixed top-5 left-5">
                 {error}
@@ -93,8 +120,10 @@ export default function Home() {
               </Suspense>
             </Canvas>
           </>
-        ) : (
+        ) : isRoot ? (
           <LoginPage />
+        ) : (
+          <></>
         )}
       </main>
     </TrackProvider>
