@@ -59,7 +59,7 @@ const SelectedTrack = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
-                className="text-lg font-medium w-40 overflow-hidden text-nowrap"
+                className="text-lg font-medium w-40 line-clamp-1"
               >
                 {selectedTrack.name}
               </motion.h3>
