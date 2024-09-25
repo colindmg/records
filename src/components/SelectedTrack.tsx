@@ -2,6 +2,7 @@ import { useTrackContext } from "@/context/TrackContext";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import PlayPauseButton from "./PlayPauseButton";
 
 const SelectedTrack = () => {
   const { selectedTrack } = useTrackContext();
@@ -10,11 +11,16 @@ const SelectedTrack = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [progress, setProgress] = useState(0);
   const [remainingTime, setRemainingTime] = useState(30);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     if (selectedTrack && audioRef.current) {
       audioRef.current.src = selectedTrack.preview_url;
-      audioRef.current.play();
+
+      audioRef.current.oncanplaythrough = () => {
+        audioRef.current?.play();
+      };
+      setIsPlaying(true);
 
       const audio = audioRef.current;
       audio.volume = 0.1;
@@ -30,6 +36,22 @@ const SelectedTrack = () => {
       return () => audio.removeEventListener("timeupdate", updateProgress);
     }
   }, [selectedTrack]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      if (isPlaying && audioRef.current.paused) {
+        audioRef.current.play();
+      } else {
+        audioRef.current.pause();
+      }
+    }
+  }, [isPlaying]);
+
+  useEffect(() => {
+    if (audioRef.current && progress >= 100) {
+      setIsPlaying(false);
+    }
+  }, [progress]);
 
   return (
     <AnimatePresence mode="wait">
@@ -102,6 +124,10 @@ const SelectedTrack = () => {
 
               {/* PROGRESS BAR */}
               <div className="flex items-center mt-1">
+                <PlayPauseButton
+                  isPlaying={isPlaying}
+                  setIsPlaying={setIsPlaying}
+                />
                 <div className="w-full bg-white rounded-full h-1">
                   <div
                     className="bg-[#171717] h-1 rounded-full transition-all ease-in-out duration-200"
