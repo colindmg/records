@@ -13,10 +13,9 @@ import TrackListItem from "./TrackListItem";
 
 interface SceneProps {
   trackList: Track[];
-  canvasRef: React.RefObject<HTMLCanvasElement>;
 }
 
-const Scene: React.FC<SceneProps> = ({ trackList, canvasRef }) => {
+const Scene: React.FC<SceneProps> = ({ trackList }) => {
   // REFS
   const cameraRef = useRef<THREE.OrthographicCamera>(null);
   const cameraSpeedRef = useMotionValue(0);
@@ -65,7 +64,6 @@ const Scene: React.FC<SceneProps> = ({ trackList, canvasRef }) => {
       </group>
 
       <CustomControls
-        canvasRef={canvasRef}
         cameraRef={cameraRef}
         itemsCount={trackList.length}
         cameraSpeedRef={cameraSpeedRef}

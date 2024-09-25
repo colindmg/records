@@ -11,7 +11,7 @@ import { ScrollControls, useProgress } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 
 export default function Home() {
   // CHECK SI LA ROUTE EST JUSTE "/"
@@ -21,9 +21,6 @@ export default function Home() {
       setIsRoot(window.location.pathname === "/");
     }
   }, []);
-
-  // REFS
-  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // STATES
   const [accessToken, setAccessToken] = useState<string | null>(null);
@@ -114,14 +111,14 @@ export default function Home() {
             </div>
 
             {/* R3F CANVAS */}
-            <Canvas ref={canvasRef}>
+            <Canvas>
               <Suspense fallback={null}>
                 <ScrollControls
                   horizontal={false}
                   pages={topTracks.length / 2.5}
                   damping={0.01}
                 >
-                  <Scene trackList={topTracks} canvasRef={canvasRef} />
+                  <Scene trackList={topTracks} />
                 </ScrollControls>
               </Suspense>
             </Canvas>
