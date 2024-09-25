@@ -1,6 +1,7 @@
 "use client";
 
 import HoveredTrack from "@/components/HoveredTrack";
+import Indicators from "@/components/Indicators";
 import LoaderScreen from "@/components/LoaderScreen";
 import LoginPage from "@/components/LoginPage";
 import Scene from "@/components/Scene";
@@ -84,6 +85,9 @@ export default function Home() {
 
             {/* HOVERED TRACK */}
             <HoveredTrack />
+
+            {/* INDICATORS */}
+            <Indicators itemsCount={topTracks.length} />
 
             {/* ERROR */}
             {error && (

@@ -1,4 +1,4 @@
-import { lerp } from "@/lib/utils";
+import { lerp, scrollOffset } from "@/lib/utils";
 import { useScroll } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { MotionValue } from "framer-motion";
@@ -26,6 +26,8 @@ const CustomControls: React.FC<CustomControlsProps> = ({
 
   useFrame((state, delta) => {
     if (cameraRef.current) {
+      scrollOffset.set(scroll.offset);
+
       const targetZ = lerp(maxZ, minZ, scroll.offset);
       const z = cameraRef.current.position.z;
       const newZ = lerp(z, targetZ, factor);

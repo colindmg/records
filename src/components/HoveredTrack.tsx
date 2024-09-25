@@ -10,7 +10,7 @@ const HoveredTrack = () => {
       {hoveredTrack && (
         <div
           key={hoveredTrack.id}
-          className="absolute bottom-16 right-16 flex flex-col items-end z-50"
+          className="absolute bottom-28 right-16 flex flex-col items-end z-50"
         >
           <motion.h3
             key={hoveredTrack.id + hoveredTrack.name}
