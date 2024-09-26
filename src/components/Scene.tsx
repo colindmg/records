@@ -1,3 +1,4 @@
+import useDimensions from "@/hooks/useDimensions";
 import { Track } from "@/lib/types";
 import {
   AdaptiveDpr,
@@ -5,7 +6,8 @@ import {
   OrthographicCamera,
   useTexture,
 } from "@react-three/drei";
-import { useRef } from "react";
+import { useMotionValueEvent } from "framer-motion";
+import { useRef, useState } from "react";
 import * as THREE from "three";
 import CustomControls from "./CustomControls";
 import TrackListItem from "./TrackListItem";
@@ -24,6 +26,14 @@ const Scene: React.FC<SceneProps> = ({ trackList }) => {
   // ALPHAMAP TEXTURE POUR LES TRACKS
   const alphaMapTexture = useTexture("/textures/alphaMap.webp");
 
+  // WINDOW DIMENSIONS
+  const { width } = useDimensions();
+  const [innerWidth, setInnerWidth] = useState<number>(width.get());
+
+  useMotionValueEvent(width, "change", (latest) => {
+    setInnerWidth(latest);
+  });
+
   return (
     <>
       {/* PERFORMANCES */}
@@ -33,7 +43,8 @@ const Scene: React.FC<SceneProps> = ({ trackList }) => {
       <OrthographicCamera
         ref={cameraRef}
         makeDefault
-        zoom={275}
+        // zoom={275}
+        zoom={innerWidth < 768 ? 200 : innerWidth > 1500 ? 300 : 275}
         near={2}
         far={10}
         position={[cameraX, cameraY, cameraZ]}

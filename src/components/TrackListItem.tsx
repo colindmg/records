@@ -1,9 +1,11 @@
 import { useTrackContext } from "@/context/TrackContext";
+import useDimensions from "@/hooks/useDimensions";
 import { Track } from "@/lib/types";
 import { cameraSpeed } from "@/lib/utils";
 import { fragmentShader, vertexShader } from "@/shaders/shader";
 import { useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
+import { useMotionValueEvent } from "framer-motion";
 import { motion } from "framer-motion-3d";
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
@@ -21,6 +23,18 @@ const TrackListItem: React.FC<TrackListItemProps> = ({
 }) => {
   // STATES
   const [isHover, setIsHover] = useState(false);
+
+  // DISABLE HOVER EFFECT ON MOBILE
+  const { width } = useDimensions();
+  const [hoverDisabled, setHoverDisabled] = useState(false);
+
+  useMotionValueEvent(width, "change", (latest) => {
+    if (latest < 768) {
+      setHoverDisabled(true);
+    } else {
+      setHoverDisabled(false);
+    }
+  });
 
   // MOTION VALUES
   const variants = {
@@ -90,7 +104,7 @@ const TrackListItem: React.FC<TrackListItemProps> = ({
         variants={variants}
         initial="initial"
         animate={
-          isHover && uniforms.current.uOpacity.value >= 0.85
+          isHover && uniforms.current.uOpacity.value >= 0.85 && !hoverDisabled
             ? "hover"
             : "appear"
         }
@@ -117,7 +131,7 @@ const TrackListItem: React.FC<TrackListItemProps> = ({
           setIsHover(false);
           setHoveredTrack(null);
         }}
-        onPointerDown={(e) => {
+        onClick={(e) => {
           e.stopPropagation();
           setSelectedTrack(track);
         }}
@@ -146,7 +160,7 @@ const TrackListItem: React.FC<TrackListItemProps> = ({
           setIsHover(false);
           setHoveredTrack(null);
         }}
-        onPointerDown={(e) => {
+        onClick={(e) => {
           e.stopPropagation();
           setSelectedTrack(track);
         }}

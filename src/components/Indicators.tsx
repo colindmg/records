@@ -28,7 +28,7 @@ const Indicators: React.FC<IndicatorsProps> = ({ itemsCount }) => {
         filter: "blur(0px)",
         transition: { delay: 0.8, duration: 1, ease: "easeOut" },
       }}
-      className="absolute bottom-16 right-16  flex h-8 items-center gap-2"
+      className="absolute z-50 bottom-16 right-16 flex h-8 items-center gap-2 max-sm:bottom-5 max-sm:right-1/2 max-sm:translate-x-1/2"
     >
       {Array.from({ length: itemsCount }, (_, index) => (
         <motion.div
