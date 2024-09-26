@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Records • Visualize & share your monthly top tracks",
-  icons: "/img/logoblack.svg",
+  icons: "/img/logoicon.svg",
 };
 
 export default function RootLayout({

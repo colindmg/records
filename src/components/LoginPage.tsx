@@ -25,7 +25,15 @@ const LoginPage = () => {
   return (
     <div className="w-full h-dvh flex flex-col items-center justify-center gap-4 relative">
       {/* MADE BY COLIN */}
-      <p className="absolute bottom-5 text-sm">
+      <motion.p
+        className="absolute bottom-5 text-sm"
+        initial={{ opacity: 0, filter: "blur(5px)" }}
+        animate={{
+          opacity: 1,
+          filter: "blur(0px)",
+          transition: { duration: 1.2, ease: "easeOut", delay: 0.7 },
+        }}
+      >
         Made by{" "}
         <a
           className="font-semibold underline decoration-thickness-[2px]"
@@ -34,7 +42,7 @@ const LoginPage = () => {
         >
           @colindmg
         </a>
-      </p>
+      </motion.p>
 
       {/* SUCCESS MESSAGE */}
       <AnimatePresence>
