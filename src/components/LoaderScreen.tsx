@@ -1,6 +1,10 @@
 import { motion } from "framer-motion";
 
-const LoaderScreen = () => {
+interface LoaderScreenProps {
+  message: string;
+}
+
+const LoaderScreen = ({ message }: LoaderScreenProps) => {
   return (
     <div
       key={"loaderScreenContainer"}
@@ -12,7 +16,7 @@ const LoaderScreen = () => {
         exit={{ opacity: 0 }}
         className="text-[#9C9A9A] animate-pulse"
       >
-        Loading your top tracks...
+        {message}
       </motion.p>
     </div>
   );

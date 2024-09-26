@@ -24,6 +24,18 @@ const LoginPage = () => {
 
   return (
     <div className="w-full h-dvh flex flex-col items-center justify-center gap-4 relative">
+      {/* MADE BY COLIN */}
+      <p className="absolute bottom-5 text-sm">
+        Made by{" "}
+        <a
+          className="font-semibold underline decoration-thickness-[2px]"
+          href="https://www.x.com/colindmg"
+          target="_blank"
+        >
+          @colindmg
+        </a>
+      </p>
+
       {/* SUCCESS MESSAGE */}
       <AnimatePresence>
         {displaySuccessMessage && (

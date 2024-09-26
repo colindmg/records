@@ -1,5 +1,6 @@
 "use client";
 
+import GenerateLinkButton from "@/components/GenerateLinkButton";
 import Interface from "@/components/Interface";
 import LoaderScreen from "@/components/LoaderScreen";
 import LoginPage from "@/components/LoginPage";
@@ -8,7 +9,7 @@ import { TrackProvider } from "@/context/TrackContext";
 import { Track } from "@/lib/types";
 import { ScrollControls, useProgress } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { Suspense, useCallback, useEffect, useState } from "react";
 
@@ -24,10 +25,22 @@ export default function Home() {
   // STATES
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [topTracks, setTopTracks] = useState<Track[]>([]);
+  const [generatedLink, setGeneratedLink] = useState<string | null>(null);
+  const [isGeneratingLink, setIsGeneratingLink] = useState(false);
+  const [copiedToClipboard, setCopiedToClipboard] = useState(false);
+  const [displayCopiedMessage, setDisplayCopiedMessage] = useState(false);
 
+  // ROUTER
   const router = useRouter();
 
+  // LOADING
+  const { progress } = useProgress();
+
+  // ---------------------------------------
+
   // FUNCTIONS
+
+  // GESTION DE LA REQUETE POUR RECUPERER LES TOP TRACKS
   const fetchTopTracks = useCallback(async () => {
     if (!accessToken) return;
 
@@ -68,8 +81,44 @@ export default function Home() {
     }
   }, [fetchTopTracks]);
 
-  // LOADING
-  const { progress } = useProgress();
+  // ---------------------------------------
+
+  // GENERATE LINK
+  const generateLink = async () => {
+    if (!accessToken || !topTracks.length) return;
+
+    setIsGeneratingLink(true);
+    try {
+      const response = await fetch("/api/mongodb/generate-link", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ topTracks }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate link");
+      }
+
+      const data = await response.json();
+      setGeneratedLink(data.link);
+      // COPY TO CLIPBOARD
+      navigator.clipboard.writeText(data.link);
+      setCopiedToClipboard(true);
+      setDisplayCopiedMessage(true);
+
+      setTimeout(() => {
+        setDisplayCopiedMessage(false);
+      }, 2000);
+    } catch (error) {
+      console.error("Error generating link:", error);
+      router.push("/error?message=Failed to generate link. Please try again.");
+    } finally {
+      setIsGeneratingLink(false);
+    }
+  };
 
   return (
     <TrackProvider>
@@ -78,10 +127,47 @@ export default function Home() {
           <>
             {/* LOADING */}
             <AnimatePresence mode="wait">
-              {progress < 100 && <LoaderScreen />}
+              {progress < 100 && (
+                <LoaderScreen message="Loading your top tracks..." />
+              )}
             </AnimatePresence>
 
             <Interface itemsCount={topTracks.length} />
+
+            {/* GENERATE LINK BUTTON */}
+            <GenerateLinkButton
+              generateLink={generateLink}
+              isGeneratingLink={isGeneratingLink}
+              copiedToClipboard={copiedToClipboard}
+            />
+
+            <AnimatePresence>
+              {displayCopiedMessage && (
+                <motion.div
+                  initial={{ opacity: 0, filter: "blur(5px)", y: 20 }}
+                  animate={{
+                    opacity: 1,
+                    filter: "blur(0px)",
+                    y: 0,
+                    transition: { duration: 0.5, ease: "easeOut" },
+                  }}
+                  exit={{
+                    opacity: 0,
+                    filter: "blur(5px)",
+                    y: -20,
+                    transition: { duration: 0.5, ease: "easeOut", delay: 2 },
+                  }}
+                  className="bg-[#F1F1F1] py-1 px-3 rounded-sm absolute z-50 bottom-32 left-16 shadow-sm"
+                >
+                  <a
+                    href={generatedLink || ""}
+                    className="text-xs text-[#9C9A9A]"
+                  >
+                    {generatedLink}
+                  </a>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* R3F CANVAS */}
             <Canvas>
