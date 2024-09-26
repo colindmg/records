@@ -9,7 +9,7 @@ function ErrorContent() {
   const errorMessage = searchParams.get("message");
 
   return (
-    <p className="text-[#9C9A9A] animate-pulse">
+    <p className="text-[#9C9A9A] animate-pulse max-w-64">
       {errorMessage || "An unknown error occurred."}
     </p>
   );
