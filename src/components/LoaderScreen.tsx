@@ -8,6 +8,7 @@ const LoaderScreen = () => {
     >
       <motion.p
         key={"loaderScreenParagraph"}
+        initial={{ opacity: 0 }}
         exit={{ opacity: 0 }}
         className="text-[#9C9A9A] animate-pulse"
       >

@@ -65,7 +65,7 @@ const SelectedTrack = () => {
               transition: { duration: 1, ease: "easeOut" },
             }}
             exit={{ opacity: 0 }}
-            className="absolute top-16 left-16 flex items-center gap-4 p-4 z-50 bg-[#F1F1F1] rounded-md shadow-sm"
+            className="absolute top-32 left-16 flex items-center gap-4 p-4 z-50 bg-[#F1F1F1] rounded-md shadow-sm"
           >
             {/* IMAGE COVER OF THE TRACK */}
             <a href={selectedTrack.external_urls.spotify} target="_blank">

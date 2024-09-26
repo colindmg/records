@@ -83,41 +83,78 @@ const TrackListItem: React.FC<TrackListItemProps> = ({
   });
 
   return (
-    <motion.mesh
-      key={track.id}
-      position={[0, 0.5, -index * 0.5]}
-      variants={variants}
-      initial="initial"
-      animate={isHover ? "hover" : "appear"}
-      transition={{
-        x: { type: "spring", stiffness: 300, damping: 20 },
-        y: { duration: 1, delay: index * 0.05, type: "spring", damping: 12 },
-      }}
-      onPointerEnter={(e) => {
-        e.stopPropagation();
-        document.body.style.cursor = "pointer";
-        setIsHover(true);
-        setHoveredTrack(track);
-      }}
-      onPointerLeave={(e) => {
-        e.stopPropagation();
-        document.body.style.cursor = "auto";
-        setIsHover(false);
-        setHoveredTrack(null);
-      }}
-      onPointerDown={(e) => {
-        e.stopPropagation();
-        setSelectedTrack(track);
-      }}
-    >
-      <planeGeometry args={[1, 1, 8, 8]} />
-      <shaderMaterial
-        transparent
-        vertexShader={vertexShader}
-        fragmentShader={fragmentShader}
-        uniforms={uniforms.current}
-      />
-    </motion.mesh>
+    <>
+      <motion.mesh
+        key={track.id}
+        position={[0, 0.5, -index * 0.5]}
+        variants={variants}
+        initial="initial"
+        animate={
+          isHover && uniforms.current.uOpacity.value >= 0.85
+            ? "hover"
+            : "appear"
+        }
+        transition={{
+          x: { type: "spring", stiffness: 300, damping: 20 },
+          y: {
+            duration: 1,
+            delay: index * 0.05,
+            type: "spring",
+            damping: 10,
+          },
+        }}
+        onPointerMove={(e) => {
+          e.stopPropagation();
+          if (uniforms.current.uOpacity.value >= 0.85) {
+            document.body.style.cursor = "pointer";
+            setIsHover(true);
+            setHoveredTrack(track);
+          }
+        }}
+        onPointerLeave={(e) => {
+          e.stopPropagation();
+          document.body.style.cursor = "auto";
+          setIsHover(false);
+          setHoveredTrack(null);
+        }}
+        onPointerDown={(e) => {
+          e.stopPropagation();
+          setSelectedTrack(track);
+        }}
+      >
+        <planeGeometry args={[1, 1, 8, 8]} />
+        <shaderMaterial
+          transparent
+          vertexShader={vertexShader}
+          fragmentShader={fragmentShader}
+          uniforms={uniforms.current}
+        />
+      </motion.mesh>
+
+      {/* AUTRE MESH INVISIBLE POUR FIX LE PROBLEME DE HOVER */}
+      <mesh
+        position={[0, 0.5, -index * 0.5]}
+        onPointerEnter={(e) => {
+          e.stopPropagation();
+          document.body.style.cursor = "pointer";
+          setIsHover(true);
+          setHoveredTrack(track);
+        }}
+        onPointerLeave={(e) => {
+          e.stopPropagation();
+          document.body.style.cursor = "auto";
+          setIsHover(false);
+          setHoveredTrack(null);
+        }}
+        onPointerDown={(e) => {
+          e.stopPropagation();
+          setSelectedTrack(track);
+        }}
+      >
+        <planeGeometry args={[1, 1, 8, 8]} />
+        <material visible={false} />
+      </mesh>
+    </>
   );
 };
 

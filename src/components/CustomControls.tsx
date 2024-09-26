@@ -5,13 +5,11 @@ import React, { useRef } from "react";
 import * as THREE from "three";
 
 interface CustomControlsProps {
-  // canvasRef: React.RefObject<HTMLCanvasElement>;
   cameraRef: React.RefObject<THREE.OrthographicCamera>;
   itemsCount: number;
 }
 
 const CustomControls: React.FC<CustomControlsProps> = ({
-  // canvasRef,
   cameraRef,
   itemsCount,
 }) => {

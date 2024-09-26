@@ -21,7 +21,15 @@ const Indicators: React.FC<IndicatorsProps> = ({ itemsCount }) => {
   });
 
   return (
-    <div className="absolute bottom-16 right-16  flex h-8 items-center gap-2 opacity-100 transition-opacity duration-500">
+    <motion.div
+      initial={{ opacity: 0, filter: "blur(5px)" }}
+      animate={{
+        opacity: 1,
+        filter: "blur(0px)",
+        transition: { delay: 0.8, duration: 1, ease: "easeOut" },
+      }}
+      className="absolute bottom-16 right-16  flex h-8 items-center gap-2"
+    >
       {Array.from({ length: itemsCount }, (_, index) => (
         <motion.div
           key={index}
@@ -34,7 +42,7 @@ const Indicators: React.FC<IndicatorsProps> = ({ itemsCount }) => {
           transition={{ duration: 0.1, ease: "linear" }}
         />
       ))}
-    </div>
+    </motion.div>
   );
 };
 

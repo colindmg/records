@@ -10,8 +10,9 @@ import { TrackProvider } from "@/context/TrackContext";
 import { Track } from "@/lib/types";
 import { ScrollControls, useProgress } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Suspense, useCallback, useEffect, useState } from "react";
 
 export default function Home() {
@@ -26,7 +27,8 @@ export default function Home() {
   // STATES
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [topTracks, setTopTracks] = useState<Track[]>([]);
-  const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter();
 
   // FUNCTIONS
   const fetchTopTracks = useCallback(async () => {
@@ -49,12 +51,14 @@ export default function Home() {
       const data = await response.json();
       // console.log(data);
       setTopTracks(data.items);
-      setError(null);
     } catch (err) {
-      console.error("Error fetching top tracks:", err);
-      setError("Failed to fetch top tracks. Please try again.");
+      console.error("Error fetching top tracks...", err);
+      // REDIRIGER VERS LA PAGE D'ERREUR
+      router.push(
+        "/error?message=Failed to fetch top tracks. Please try again."
+      );
     }
-  }, [accessToken]);
+  }, [accessToken, router]);
 
   useEffect(() => {
     const hash = window.location.hash.substring(1);
@@ -76,9 +80,30 @@ export default function Home() {
         {accessToken ? (
           <>
             {/* LOADING */}
-            <AnimatePresence>
+            <AnimatePresence mode="wait">
               {progress < 100 && <LoaderScreen />}
             </AnimatePresence>
+
+            {/* TITLE */}
+            <motion.div
+              initial={{ opacity: 0, filter: "blur(5px)" }}
+              animate={{
+                opacity: 1,
+                filter: "blur(0px)",
+                transition: { delay: 0.8, duration: 1, ease: "easeOut" },
+              }}
+              className="absolute flex items-center gap-4 top-16 left-16 z-50"
+            >
+              <Image
+                src="/img/logoblack.svg"
+                width={40}
+                height={40}
+                alt="Records. Logo"
+              />
+              <h1 className="text-3xl">
+                <span className="font-extrabold">Re</span>cords.
+              </h1>
+            </motion.div>
 
             {/* SELECTED TRACK */}
             <SelectedTrack />
@@ -88,13 +113,6 @@ export default function Home() {
 
             {/* INDICATORS */}
             <Indicators itemsCount={topTracks.length} />
-
-            {/* ERROR */}
-            {error && (
-              <p className="text-red-500 text-center mb-4 fixed top-5 left-5">
-                {error}
-              </p>
-            )}
 
             {/* BLUR SHAPES */}
             <div className="pointer-events-none select-none">
@@ -118,6 +136,7 @@ export default function Home() {
             <Canvas>
               <Suspense fallback={null}>
                 <ScrollControls
+                  eps={0.001}
                   horizontal={false}
                   pages={topTracks.length / 2.5}
                   damping={0.01}
