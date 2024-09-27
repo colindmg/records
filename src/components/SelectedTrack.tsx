@@ -2,6 +2,7 @@ import { useTrackContext } from "@/context/TrackContext";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import AudioAnimatedIcon from "./AudioAnimatedIcon";
 import PlayPauseButton from "./PlayPauseButton";
 
 const SelectedTrack = () => {
@@ -101,16 +102,20 @@ const SelectedTrack = () => {
 
             {/* TRACK NAME AND ARTIST */}
             <div className="flex flex-col">
-              <motion.h3
-                key={selectedTrack.id + selectedTrack.name}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="text-lg font-medium w-40 line-clamp-1"
-              >
-                {selectedTrack.name}
-              </motion.h3>
+              <div className="flex items-center gap-1">
+                <AudioAnimatedIcon isPlaying={isPlaying} />
+                <motion.h3
+                  key={selectedTrack.id + selectedTrack.name}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="text-lg font-medium w-40 line-clamp-1"
+                >
+                  {selectedTrack.name}
+                </motion.h3>
+              </div>
+
               <motion.p
                 key={selectedTrack.id + selectedTrack.artists[0].name}
                 initial={{ opacity: 0, y: 10 }}
