@@ -1,7 +1,8 @@
-export async function requestAcces({ from }: { from: string }) {
-  const webhookUrl =
-    "https://hook.eu2.make.com/ro6feveiq95o5prn7sromen20z9n179u";
+"use server";
 
+const webhookUrl = process.env.MAKE_EMAIL_WEBHOOK as string;
+
+export async function requestAcces({ from }: { from: string }) {
   const to = "colin.demouge@gmail.com";
   const subject = `Records - Request access from ${from}`;
   const content = `New request access received from ${from}`;

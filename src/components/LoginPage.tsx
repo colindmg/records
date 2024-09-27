@@ -2,11 +2,14 @@ import { requestAcces } from "@/lib/email";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [displaySuccessMessage, setDisplaySuccessMessage] = useState(false);
+  const [requestSubmitted, setRequestSubmitted] = useState(false);
+
+  const requestInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -14,6 +17,12 @@ const LoginPage = () => {
     if (result === "Success") {
       setDisplaySuccessMessage(true);
       setEmail("");
+      setRequestSubmitted(true);
+      // Empty the input
+      if (requestInputRef.current) {
+        requestInputRef.current.value = "";
+      }
+
       setTimeout(() => {
         setDisplaySuccessMessage(false);
       }, 3000);
@@ -112,6 +121,7 @@ const LoginPage = () => {
         {/* EMAIL FORM */}
         <form onSubmit={handleSubmit} className="flex flex-col">
           <motion.input
+            ref={requestInputRef}
             initial={{ opacity: 0, filter: "blur(5px)" }}
             animate={{
               opacity: 1,
@@ -128,6 +138,7 @@ const LoginPage = () => {
 
           <motion.button
             initial={{ opacity: 0, filter: "blur(5px)" }}
+            disabled={requestSubmitted}
             animate={{
               opacity: 1,
               filter: "blur(0px)",
@@ -135,6 +146,7 @@ const LoginPage = () => {
             }}
             type="submit"
             className="flex items-center justify-center gap-1 py-3 px-4 text-sm bg-[#F1F1F1] rounded-md font-medium mt-1 shadow-sm hover:shadow-md transition-shadow duration-500 ease-in-out relative before:absolute before:inset-0 before:rounded-[inherit] before:bg-[linear-gradient(45deg,transparent_25%,theme(colors.white/.5)_50%,transparent_75%,transparent_100%)] dark:before:bg-[linear-gradient(45deg,transparent_25%,theme(colors.white)_50%,transparent_75%,transparent_100%)] before:bg-[length:250%_250%,100%_100%] before:bg-[position:200%_0,0_0] before:bg-no-repeat before:[transition:background-position_0s_ease] hover:before:bg-[position:-100%_0,0_0] hover:before:duration-[1500ms]"
+            style={{ cursor: requestSubmitted ? "not-allowed" : "pointer" }}
           >
             Request<span className="font-semibold">Access</span>
           </motion.button>
