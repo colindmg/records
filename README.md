@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+![Thumbnail](public/img/thumbnail.png)
 
-## Getting Started
+> 3D Visualizer for your Spotify's monthly top tracks.
 
-First, run the development server:
+![NextJS](https://img.shields.io/badge/Next-101010?style=flat&logoSize=small&logo=nextdotjs&logoColor=FFFFFF) ![Spotify](https://img.shields.io/badge/SpotifyAPI-101010?style=flat&logoSize=small&logo=spotify&logoColor=FFFFFF) ![FramerMotion](https://img.shields.io/badge/FramerMotion-101010?style=flat&logoSize=small&logo=framer&logoColor=FFFFFF) ![R3F](https://img.shields.io/badge/R3F-101010?style=flat&logoSize=small&logo=threedotjs&logoColor=FFFFFF) ![MongoDB](https://img.shields.io/badge/MongoDB-101010?style=flat&logoSize=small&logo=mongodb&logoColor=FFFFFF)
+
+---
+
+## How to make it run locally
+
+### 0 ‣ Pre-requisites
+
+- [Node.js](https://nodejs.org/en/download/)
+- [Spotify Developer Account](https://developer.spotify.com/dashboard/applications)
+- Clone this repository
+
+---
+
+### 1 ‣ Create a Spotify App
+
+First of all, you need to create a Spotify App in the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/applications).
+
+- Click on `Create an App`
+- Choose the name/description you want
+- Add `http://localhost:3000/api/callback` to the Redirect URIs & select `Web API` for the API you're planning to use.
+
+Once you've created the app, you'll get a `Client ID` and a `Client Secret` (you can find it on your app settings). You'll need these in the next step.
+
+---
+
+### 2 ‣ Set up the main environment variables
+
+Create a `.env` file in the root of the project and add the following variables:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Spotify API
+SPOTIFY_CLIENT_ID="YOUR_SPOTIFY_CLIENT_ID"
+SPOTIFY_CLIENT_SECRET="YOUR_SPOTIFY_CLIENT_SECRET"
+
+# App URLs
+REDIRECT_URI="http://localhost:3000/api/callback"
+NEXT_PUBLIC_BASE_URL="http://localhost:3000"
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3 ‣ Run the project
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This app was built with Next.js, so you can run it with the following commands:
 
-## Learn More
+```bash
+# Install dependencies
+npm install
 
-To learn more about Next.js, take a look at the following resources:
+# Run the project
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- The project should now be running on `http://localhost:3000`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+You can now login with your Spotify account or any account added to your app in the Spotify Developer Dashboard and visualize your top tracks.
 
-## Deploy on Vercel
+![Screenshot](public/img/screenshot.png)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+PS : Don't mind the `Request access` part, it is not useful in your case. Also, you can't create a share link as it requires a MongoDB database to store the user's data.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+### Bonus ‣ MongoDB
+
+To store the user's data and create a share link, I'm using a MongoDB database. So if you want to implement this feature, you'll need to create your own MongoDB database and add the following variables to your `.env` file:
+
+```bash
+# MongoDB
+MONGODB_URI="YOUR_MONGODB_URI"
+```
+
+---
+
+Thanks for reading ! If you have any questions, feel free to ask me on [X](https://x.com/colindmg).
+
+✦ ✶ ✷

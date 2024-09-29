@@ -4,6 +4,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Records • Visualize & share your monthly top tracks",
+  description:
+    "Records is a tool that lets you visualize and share your monthly top tracks on Spotify.",
   icons: "/img/logoicon.svg",
 };
 
