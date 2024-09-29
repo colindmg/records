@@ -65,7 +65,7 @@ export default function Home() {
       console.error("Error fetching top tracks...", err);
       // REDIRIGER VERS LA PAGE D'ERREUR
       router.push(
-        "/error?message=Failed to fetch top tracks. Please try again."
+        "/error?message=Failed to fetch top tracks. Please try again and make sure your access has be granted"
       );
     }
   }, [accessToken, router]);

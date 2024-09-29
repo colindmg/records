@@ -1,4 +1,5 @@
 import { MongoClient } from "mongodb";
+import { notFound } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -15,16 +16,12 @@ export async function GET(
     const userData = await collection.findOne({ userId: params.userId });
 
     if (!userData) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      notFound();
     }
 
     return NextResponse.json({ topTracks: userData.topTracks });
   } catch (error) {
-    console.error("Error fetching top tracks:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: error }, { status: 500 });
   } finally {
     await client.close();
   }
