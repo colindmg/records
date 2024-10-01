@@ -139,6 +139,7 @@ export default function Home() {
               generateLink={generateLink}
               isGeneratingLink={isGeneratingLink}
               copiedToClipboard={copiedToClipboard}
+              generatedLink={generatedLink || ""}
             />
 
             <AnimatePresence>
@@ -157,7 +158,7 @@ export default function Home() {
                     y: -20,
                     transition: { duration: 0.5, ease: "easeOut", delay: 2 },
                   }}
-                  className="bg-[#F1F1F1] py-1 px-3 rounded-sm absolute z-50 bottom-32 left-16 shadow-sm"
+                  className="bg-[#F1F1F1] py-1 px-3 rounded-sm absolute z-50 bottom-32 left-16 shadow-sm max-sm:hidden"
                 >
                   <a
                     href={generatedLink || ""}
