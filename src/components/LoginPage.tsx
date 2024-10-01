@@ -134,11 +134,15 @@ const LoginPage = () => {
             required
             onChange={(e) => setEmail(e.target.value)}
             className="w-full py-3 px-4 text-sm border border-[#9C9A9A]/20 outline-none focus:outline-none border-1 bg-transparent rounded-md font-medium mb-1 placeholder:text-[#9C9A9A]/50 "
+            // DISABLED CLASS
+            // disabled
+            // className="w-full py-3 px-4 text-sm border border-[#9C9A9A]/20 outline-none focus:outline-none border-1 rounded-md font-medium mb-1 placeholder:text-[#9C9A9A]/50 bg-neutral-400/10 cursor-not-allowed"
           />
 
           <motion.button
             initial={{ opacity: 0, filter: "blur(5px)" }}
             disabled={requestSubmitted}
+            // disable
             animate={{
               opacity: 1,
               filter: "blur(0px)",
@@ -149,6 +153,7 @@ const LoginPage = () => {
             style={{ cursor: requestSubmitted ? "not-allowed" : "pointer" }}
           >
             Request<span className="font-semibold">Access</span>
+            {/* No access left, sorry */}
           </motion.button>
         </form>
 
